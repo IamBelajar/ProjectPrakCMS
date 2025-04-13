@@ -1,18 +1,30 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PendaftarController;
+use App\Models\Pendaftar;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::get('/pendaftars', [PendaftarController::class, 'index']);
+Route::get('/pendaftars/{id}', [PendaftarController::class, 'show']);
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/pendaftars/{id}', function ($id) {
+    $pendaftar = Pendaftar::find($id);
+    return view('pendaftar.show', compact('pendaftar'));
+});
+
+Route::post('/pengambilan-antrian', function (Request $request) {
+    $nomor = rand(100, 999);
+
+    return redirect()->back()->with('antrian', [
+        'nomor' => $nomor
+    ]);
+});
+
+Route::post('/cek-status-kk', function (Request $request) {
+    $status = rand(0, 1) ? 'Masih diproses' : 'Sudah selesai';
+
+    return redirect()->back()->with('status_kk', [
+        $nik = request('nik'),
+        'status' => $status
+    ]);
 });
