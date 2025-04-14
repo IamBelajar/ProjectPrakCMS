@@ -7,24 +7,22 @@ use App\Models\Pendaftar;
 Route::get('/pendaftars', [PendaftarController::class, 'index']);
 Route::get('/pendaftars/{id}', [PendaftarController::class, 'show']);
 
-Route::get('/pendaftars/{id}', function ($id) {
-    $pendaftar = Pendaftar::find($id);
-    return view('pendaftar.show', compact('pendaftar'));
-});
+// Halaman detail pendaftar dengan formulir
+Route::get('/pendaftar/{jenis}', [PendaftarController::class, 'show'])->name('pendaftar.show');
 
-Route::post('/pengambilan-antrian', function (Request $request) {
-    $nomor = rand(100, 999);
+// Proses pengambilan antrian
+Route::post('/pengambilan-antrian', [PendaftarController::class, 'simpanAntrian'])->name('antrian.simpan');
 
-    return redirect()->back()->with('antrian', [
-        'nomor' => $nomor
+// Proses pengecekan status KK
+Route::post('/cek-status-kk', [PendaftarController::class, 'cekStatusKK'])->name('kk.cek');
+
+// (Opsional) Daftar semua jenis pendaftar
+Route::get('/pendaftars', function () {
+    return view('pendaftar\index', [
+        'pendaftars' => [
+            ['id' => 1, 'title' => 'Pengambilan nomor antrian'],
+            ['id' => 2, 'title' => 'Pengecekan status kk'],
+        ]
     ]);
-});
-
-Route::post('/cek-status-kk', function (Request $request) {
-    $status = rand(0, 1) ? 'Masih diproses' : 'Sudah selesai';
-
-    return redirect()->back()->with('status_kk', [
-        $nik = request('nik'),
-        'status' => $status
-    ]);
-});
+    
+})->name('pendaftars.index');

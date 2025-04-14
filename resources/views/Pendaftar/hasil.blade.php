@@ -6,7 +6,28 @@
 <body>
     <h1>{{ $pendaftar['title'] }}</h1>
 
-    @if ($pendaftar['title'] === 'Pengambilan nomor antrian')
+    {{-- Hasil Pengambilan Nomor Antrian --}}
+    @if (isset($nomor_antrian))
+        <h2>Nomor Antrian Anda</h2>
+        <p>Terima kasih, <strong>{{ $nama }}</strong>.</p>
+        <p>Nomor Antrian Anda adalah: <strong>{{ $nomor_antrian }}</strong></p>
+
+    {{-- Hasil Cek Status KK --}}
+    @elseif (isset($status))
+        <h2>Status Kartu Keluarga</h2>
+        <p>NIK: <strong>{{ $nik }}</strong></p>
+        <p>Status: 
+            <strong>
+                @if ($status === 'proses')
+                    Sedang Diproses
+                @else
+                    Sudah Selesai
+                @endif
+            </strong>
+        </p>
+
+    {{-- Form Pengambilan Antrian --}}
+    @elseif ($pendaftar['title'] === 'Pengambilan nomor antrian')
         <form action="{{ url('/pengambilan-antrian') }}" method="POST">
             @csrf
             <label>Nama:</label><br>
@@ -24,6 +45,7 @@
             <button type="submit">Submit</button>
         </form>
 
+    {{-- Form Pengecekan Status KK --}}
     @elseif ($pendaftar['title'] === 'Pengecekan status kk')
         <form action="{{ url('/cek-status-kk') }}" method="POST">
             @csrf
@@ -32,9 +54,7 @@
 
             <button type="submit">Cek Status</button>
         </form>
-
     @endif
-    
 
     <br>
     <a href="{{ url('/pendaftars') }}">Kembali ke Daftar Pendaftar</a>
