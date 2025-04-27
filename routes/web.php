@@ -26,3 +26,7 @@ Route::get('/pendaftars', function () {
     ]);
     
 })->name('pendaftars.index');
+
+Route::get('/pendaftar', [PendaftarController::class, 'index'])->name('pendaftar.index');
+Route::get('/pendaftar/{id}', [PendaftarController::class, 'show'])->name('pendaftar.show');
+Route::get('/hasil', [PendaftarController::class, 'hasil'])->name('pendaftar.hasil');
