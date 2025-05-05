@@ -2,31 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PendaftarController;
-use App\Models\Pendaftar;
 
-Route::get('/pendaftars', [PendaftarController::class, 'index']);
-Route::get('/pendaftars/{id}', [PendaftarController::class, 'show']);
-
-// Halaman detail pendaftar dengan formulir
-Route::get('/pendaftar/{jenis}', [PendaftarController::class, 'show'])->name('pendaftar.show');
-
-// Proses pengambilan antrian
-Route::post('/pengambilan-antrian', [PendaftarController::class, 'simpanAntrian'])->name('antrian.simpan');
-
-// Proses pengecekan status KK
-Route::post('/cek-status-kk', [PendaftarController::class, 'cekStatusKK'])->name('kk.cek');
-
-// (Opsional) Daftar semua jenis pendaftar
-Route::get('/pendaftars', function () {
-    return view('pendaftar\index', [
-        'pendaftars' => [
-            ['id' => 1, 'title' => 'Pengambilan nomor antrian'],
-            ['id' => 2, 'title' => 'Pengecekan status kk'],
-        ]
-    ]);
-    
-})->name('pendaftars.index');
-
-Route::get('/pendaftar', [PendaftarController::class, 'index'])->name('pendaftar.index');
-Route::get('/pendaftar/{id}', [PendaftarController::class, 'show'])->name('pendaftar.show');
-Route::get('/hasil', [PendaftarController::class, 'hasil'])->name('pendaftar.hasil');
+Route::get('/', [PendaftarController::class, 'index']);
+Route::post('/pendaftar', [PendaftarController::class, 'store'])->name('pendaftar.store');
+Route::get('/show', [PendaftarController::class, 'show'])->name('pendaftar.show'); // Rute show tanpa ID
+Route::post('/cetak-kk', [PendaftarController::class, 'cetakKK'])->name('pendaftar.cetak');
+// web.php
+Route::get('/pendaftar/form', function () {
+    return view('pendaftar.show');
+})->name('pendaftar.form');
+Route::get('/pendaftar/cetak', function () {
+    return view('pendaftar.show');
+})->name('pendaftar.cetak');
+Route::get('/', function () {
+    return view('pendaftar.index');
+})->name('pendaftar.index');

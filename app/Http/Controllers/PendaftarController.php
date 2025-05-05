@@ -2,59 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Pendaftar;
+use Illuminate\Http\Request;
 
 class PendaftarController extends Controller
 {
-public function index()
-
-    {
-        $pendaftars = Pendaftar::all();
-        return view('pendaftar\index', compact('pendaftars'));
-    }
-
-    public function show($id)
-    {
-        $pendaftar = pendaftar::find($id);
-        if (!$pendaftar) {
-            abort(404);
-        }
-        return view('pendaftar\show', compact('pendaftar'));
-    }
-    // Untuk Antrian
-public function simpanAntrian(Request $request)
+    public function index(Request $request)
 {
-    $request->validate([
-        'nama' => 'required',
-        'nik' => 'required',
-        'alamat' => 'required',
-        'telepon' => 'required',
-    ]);
-
-    $nomorAntrian = rand(100, 999);
-
-    return view('pendaftar\hasil', [
-        'pendaftar' => ['title' => 'Pengambilan nomor antrian'],
-        'nama' => $request->nama,
-        'nomor_antrian' => $nomorAntrian,
-    ]);
+    $pendaftar = $request->session()->get('pendaftar', null);
+    return view('pendaftar.index', compact('pendaftar'));
 }
 
-// Untuk Status KK
-public function cekStatusKK(Request $request)
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'nik' => 'required|unique:pendaftar,nik',
+            'alamat' => 'required',
+            'telepon' => 'required',
+        ]);
+
+        $pendaftar = new Pendaftar();
+        $pendaftar->nama = $request->nama;
+        $pendaftar->nik = $request->nik;
+        $pendaftar->alamat = $request->alamat;
+        $pendaftar->telepon = $request->telepon;
+        $pendaftar->save();
+
+        $pendaftar->no_antrian = $pendaftar->id;  // Assuming ID is the queue number
+        $pendaftar->save();
+
+        return view('show', ['pendaftar' => $pendaftar]);
+    }
+
+    public function show()
+    {
+        // Cek apakah ada pendaftar yang sudah terdaftar di session atau melalui request
+        $pendaftar = session('pendaftar'); // Bisa gunakan session untuk menyimpan data sementara
+        $nomorAntrian = rand(1000, 9999); // Nomor antrian acak
+
+        return view('pendaftar.show', compact('pendaftar', 'nomorAntrian'));
+    }
+
+    public function cetakKK(Request $request)
+    {
+        $pendaftar = Pendaftar::find($request->id);
+        // Logic for generating the KK printout can be added here
+        return view('hasil', ['pendaftar' => $pendaftar]);
+    }
+    public function form()
 {
-    $request->validate([
-        'nik' => 'required',
-    ]);
+    return view('pendaftar.form');
+}
 
-    $status = rand(0, 1) ? 'proses' : 'selesai';
-
-    return view('pendaftar\hasil', [
-        'pendaftar' => ['title' => 'Pengecekan status kk'],
-        'nik' => $request->nik,
-        'status' => $status,
-    ]);
+public function cetak()
+{
+    return view('pendaftar.cetak');
 }
 
 }
