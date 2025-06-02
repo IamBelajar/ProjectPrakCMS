@@ -16,13 +16,12 @@ class KkFactory extends Factory
      */
     public function definition(): array
     {
-        $pendaftar = Pendaftar::inRandomOrder()->first() ?? Pendaftar::factory()->create();
 
         return [
-            'pendaftar_id' => $pendaftar->id,
+            'id_pendaftar' => $pendaftar->id,
             'nik' => $pendaftar->nik,
             'no_kk' => $this->faker->unique()->numerify('################'),
-            'nama_kepala_keluarga' => $pendaftar->nama,
+            'nama_kk' => $pendaftar->nama,
             'alamat' => $pendaftar->alamat,
             'tanggal_cetak' => now(),
         ];

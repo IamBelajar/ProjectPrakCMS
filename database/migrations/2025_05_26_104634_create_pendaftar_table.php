@@ -4,27 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreatePendaftarTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('pendaftars', function (Blueprint $table) {
+        Schema::create('pendaftar', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('nik')->unique();
             $table->string('alamat');
-            $table->string('tempat_lahir');
-            $table->date('tanggal_lahir');
-            $table->string('jenis_kelamin');
-            $table->string('agama');
-            $table->string('pekerjaan');
+            $table->string('telepon');
             $table->timestamps();
         });        
-
-        $this->callSeeder();
     }
 
     private function callSeeder(): void
@@ -33,11 +24,8 @@ return new class extends Migration
         (new PendaftarSeeder)->run();
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('pendaftar');
     }
-};
+}

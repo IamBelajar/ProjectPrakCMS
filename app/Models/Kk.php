@@ -2,29 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Kk extends Model
 {
-    use HasFactory;
+    protected $table = 'KK';
 
-    // Jika nama tabel bukan jamak dari nama model, sebutkan secara eksplisit
-    protected $table = 'kk';
+    // Jika tidak ada kolom ID sebagai primary key, tentukan primary key lain
+    protected $primaryKey = 'id_kk';  // ganti sesuai nama kolom primary key di tabel KK
 
-    // Kolom yang dapat diisi massal
+    public $incrementing = false; // jika primary key bukan auto-increment
+
+    protected $keyType = 'string'; // jika primary key bertipe string, sesuaikan
+
     protected $fillable = [
-        'pendaftar_id',
-        'nik',
-        'no_kk',
-        'nama_kepala_keluarga',
-        'alamat',
-        'tanggal_cetak',
+        'id_pendaftar', 'nik', 'no_kk', 'nama_kk', 'alamat', 'tanggal_cetak'
     ];
-
-    // Relasi ke model Pendaftar
-    public function pendaftar()
-    {
-        return $this->belongsTo(Pendaftar::class);
-    }
 }

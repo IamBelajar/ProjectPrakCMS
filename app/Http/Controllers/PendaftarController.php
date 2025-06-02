@@ -2,63 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pendaftar;
 use Illuminate\Http\Request;
+use App\Models\KK;
+use App\Models\Pendaftar;
 
 class PendaftarController extends Controller
 {
-    public function index(Request $request)
+    public function formPendaftaran()
 {
-    $pendaftar = $request->session()->get('pendaftar', null);
-    return view('pendaftar.index', compact('pendaftar'));
+    return view('pendaftar.show'); // view ini berisi form yang kamu lampirkan di atas
 }
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required',
-            'nik' => 'required|unique:pendaftar,nik',
+    public function submitPendaftaran(Request $request)
+{
+    $request->validate([
+        'nama' => 'required',
+        'nik' => 'required|unique:pendaftar,nik',
+        'alamat' => 'required',
+        'telepon' => 'required',
+    ]);
+
+    $pendaftar = new Pendaftar();
+    $pendaftar->nama = $request->nama;
+    $pendaftar->nik = $request->nik;
+    $pendaftar->alamat = $request->alamat;
+    $pendaftar->telepon = $request->telepon;
+    $pendaftar->save();
+
+    return redirect()->route('pendaftar.form')
+                     ->with('success_pendaftaran', 'Pendaftaran berhasil!')
+                     ->with('pendaftar', $pendaftar);
+}
+
+     public function formKk() {
+        session(['type' => 'kk']);
+        return view('kk.show');
+    }
+
+    public function submitKk(Request $request) {
+        $validated = $request->validate([
+            'id_pendaftar' => 'required|integer',
+            'nik' => 'required|integer',
+            'no_kk' => 'required|integer',
+            'nama_kk' => 'required',
             'alamat' => 'required',
-            'telepon' => 'required',
+            'tanggal_cetak' => 'required',
         ]);
 
-        $pendaftar = new Pendaftar();
-        $pendaftar->nama = $request->nama;
-        $pendaftar->nik = $request->nik;
-        $pendaftar->alamat = $request->alamat;
-        $pendaftar->telepon = $request->telepon;
-        $pendaftar->save();
+        $kk = Kk::create($validated);
+        session(['kk'=>$kk,'type' => 'kk']);
 
-        $pendaftar->no_antrian = $pendaftar->id;  // Assuming ID is the queue number
-        $pendaftar->save();
-
-        return view('show', ['pendaftar' => $pendaftar]);
+        
+        return redirect()->route('pendaftar.cetak')
+                     ->with('success_kk', 'KK Siap Cetak!')
+                     ->with('kk', $kk);
     }
 
-    public function show()
-    {
-        // Cek apakah ada pendaftar yang sudah terdaftar di session atau melalui request
-        $pendaftar = session('pendaftar'); // Bisa gunakan session untuk menyimpan data sementara
-        $nomorAntrian = rand(1000, 9999); // Nomor antrian acak
 
-        return view('pendaftar.show', compact('pendaftar', 'nomorAntrian'));
-    }
-
-    public function cetakKK(Request $request)
-    {
-        $pendaftar = Pendaftar::find($request->id);
-        // Logic for generating the KK printout can be added here
-        return view('hasil', ['pendaftar' => $pendaftar]);
-    }
-    public function form()
+    public function destroy($id)
 {
-    return view('pendaftar.form');
-}
+    // Hapus data Pendaftar
+    $pendaftar = Pendaftar::findOrFail($id);
+    $pendaftar->delete();
 
-public function cetak()
-{
-    return view('pendaftar.cetak');
+    session()->forget('pendaftar');
+
+    // Hapus data KK yang terkait jika ada
+    $kk = KK::where('id_pendaftar', $id)->first();
+    if ($kk) {
+        $kk->delete();
+        session()->forget('kk');
+    }
+
+    return redirect()->route('pendaftar.form')->with('success', 'Data pendaftar dan KK berhasil dihapus');
 }
 
 }

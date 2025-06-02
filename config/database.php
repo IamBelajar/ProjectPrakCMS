@@ -41,7 +41,7 @@ return [
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1521'),
             'database' => env('DB_DATABASE', 'XE'),
-            'username' => env('DB_USERNAME', 'c##projectcms'),
+            'username' => env('DB_USERNAME', 'c##projectcmsterbaru'),
             'password' => env('DB_PASSWORD', 'system'),
             'charset' => 'AL32UTF8',
             'prefix' => '',

@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kk;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class KkSeeder extends Seeder
+class KKSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        KkSeeder::class;
+        KKSeeder::class;
     }
 }

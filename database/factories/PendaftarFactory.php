@@ -20,11 +20,7 @@ class PendaftarFactory extends Factory
             'nama' => $this->faker->name(),
             'nik' => $this->faker->unique()->numerify('3210##############'),
             'alamat' => $this->faker->address(),
-            'tempat_lahir' => $this->faker->city(),
-            'tanggal_lahir' => $this->faker->date('Y-m-d', '-18 years'),
-            'jenis_kelamin' => $this->faker->randomElement(['Laki-laki', 'Perempuan']),
-            'agama' => $this->faker->randomElement(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu']),
-            'pekerjaan' => $this->faker->jobTitle(),
+            'telepon' => $this->faker->number(),
         ];
     }
 }
