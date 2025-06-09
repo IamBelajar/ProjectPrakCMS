@@ -32,3 +32,6 @@ Route::post('/pendaftaran', [PendaftarController::class, 'submitPendaftaran'])->
 Route::get('/kk', [PendaftarController::class, 'showForm'])->name('kk.form');
 Route::post('/kk/submit', [PendaftarController::class, 'submitKk'])->name('kk.submit');
 
+Route::get('/pendaftaran-kk', function () {
+    return 'Selamat datang di halaman Pendaftaran KK Online!';
+})->middleware('check.age');
