@@ -44,6 +44,8 @@
     <div class="text-center action-buttons mt-5">
     <a href="{{ route('pendaftar.form') }}" class="btn btn-success btn-lg">📝 Mulai Pendaftaran</a>
     <a href="{{ route('pendaftar.cetak') }}" class="btn btn-warning btn-lg">📄 Hasil Cetak</a>
+    <a href="{{ route('image.upload') }}" class="btn btn-warning btn-lg">📄 Upload foto</a>
+    
 </div>
 
 </div>

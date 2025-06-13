@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PendaftarController;
+use App\Http\Controllers\ImageController;
 
 Route::get('/pendaftar/form', function () {
     return view('pendaftar.show');
@@ -35,3 +36,6 @@ Route::post('/kk/submit', [PendaftarController::class, 'submitKk'])->name('kk.su
 Route::get('/pendaftaran-kk', function () {
     return 'Selamat datang di halaman Pendaftaran KK Online!';
 })->middleware('check.age');
+
+Route::get('/upload', [ImageController::class, 'create']);
+Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
