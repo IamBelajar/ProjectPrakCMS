@@ -37,5 +37,6 @@ Route::get('/pendaftaran-kk', function () {
     return 'Selamat datang di halaman Pendaftaran KK Online!';
 })->middleware('check.age');
 
-Route::get('/upload', [ImageController::class, 'create']);
+Route::get('/upload', [ImageController::class, 'create'])->name('pendaftar.upload');
 Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
+Route::delete('/upload/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
