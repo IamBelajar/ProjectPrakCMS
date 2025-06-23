@@ -21,6 +21,11 @@
                         🖨️ Cetak KK
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-success rounded-pill px-4" href="{{ route('form.cek.pendaftar') }}">
+                        Cek
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

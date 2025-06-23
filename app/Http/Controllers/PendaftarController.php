@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\KK;
 use App\Models\Pendaftar;
@@ -38,6 +38,26 @@ class PendaftarController extends Controller
      public function formKk() {
         session(['type' => 'kk']);
         return view('kk.show');
+    }
+
+    public function formCekPendaftar()
+    {
+        session(['type' => 'cek']);
+        return view('pendaftar.cek');
+    }
+
+    public function cekPendaftar(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer'
+        ]);
+
+        try {
+            $data = Pendaftar::findOrFail($request->id);
+            return view('pendaftar.cek', compact('data'));
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('form.cek.pendaftar')->withErrors('Pendaftar tidak ditemukan.');
+        }
     }
 
     public function submitKk(Request $request) {

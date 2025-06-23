@@ -42,9 +42,6 @@
                     <table class="table table-bordered mt-3">
                         <tr><th>ID</th><td>{{ session('pendaftar')->id }}</td></tr>
                         <tr><th>Nama</th><td>{{ session('pendaftar')->nama }}</td></tr>
-                        <tr><th>NIK</th><td>{{ session('pendaftar')->nik }}</td></tr>
-                        <tr><th>Alamat</th><td>{{ session('pendaftar')->alamat }}</td></tr>
-                        <tr><th>Telepon</th><td>{{ session('pendaftar')->telepon }}</td></tr>
                     </table>
 
                     <form action="{{ route('pendaftar.destroy', session('pendaftar')->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
