@@ -3,56 +3,71 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- Form Pendaftaran --}}
-    @if(Route::currentRouteName() == 'pendaftar.form')
-        <div class="card mb-5">
-            <div class="card-header bg-primary text-white">
-                <h4>Form Pendaftaran</h4>
-            </div>
-            <div class="card-body">
-
-                @if(session('success_pendaftaran'))
-                    <div class="alert alert-success">{{ session('success_pendaftaran') }}</div>
-                @endif
-
-                <form action="{{ route('pendaftaran.submit') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label>Nama:</label>
-                        <input type="text" name="nama" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>NIK:</label>
-                        <input type="text" name="nik" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Alamat:</label>
-                        <input type="text" name="alamat" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>No Telepon:</label>
-                        <input type="text" name="telepon" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-3">Daftar</button>
-                </form>
-
-                @if(session('pendaftar'))
-                    <hr>
-                    <h5>Detail Pendaftar Baru</h5>
-                    <table class="table table-bordered mt-3">
-                        <tr><th>ID</th><td>{{ session('pendaftar')->id }}</td></tr>
-                        <tr><th>Nama</th><td>{{ session('pendaftar')->nama }}</td></tr>
-                    </table>
-
-                    <form action="{{ route('pendaftar.destroy', session('pendaftar')->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button href="{{ route('pendaftar.form') }}" type="submit" class="btn btn-danger">Hapus Data</button>
-                    </form>
-                @endif
-            </div>
+   {{-- Form Pendaftaran --}}
+@if(Route::currentRouteName() == 'pendaftar.form')
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            <h4>Form Pendaftaran</h4>
         </div>
-    @endif
+        <div class="card-body">
+
+            {{-- Menampilkan pesan sukses --}}
+            @if(session('success_pendaftaran'))
+                <div class="alert alert-success">
+                    {{ session('success_pendaftaran') }}
+                </div>
+            @endif
+
+            {{-- Menampilkan error dari controller atau validasi --}}
+            @if($errors->any())
+                <div class="alert alert-danger">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                </div>
+            @endif
+
+            <form action="{{ route('pendaftaran.submit') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label>Nama:</label>
+                    <input type="text" name="nama" class="form-control" value="{{ old('nama') }}" required>
+                </div>
+                <div class="form-group">
+                    <label>NIK:</label>
+                    <input type="text" name="nik" class="form-control" value="{{ old('nik') }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Alamat:</label>
+                    <input type="text" name="alamat" class="form-control" value="{{ old('alamat') }}" required>
+                </div>
+                <div class="form-group">
+                    <label>No Telepon:</label>
+                    <input type="text" name="telepon" class="form-control" value="{{ old('telepon') }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Daftar</button>
+            </form>
+
+            {{-- Jika data berhasil disimpan dan ada session pendaftar --}}
+            @if(session('pendaftar'))
+                <hr>
+                <h5>Detail Pendaftar Baru</h5>
+                <table class="table table-bordered mt-3">
+                    <tr><th>ID</th><td>{{ session('pendaftar')->id }}</td></tr>
+                    <tr><th>Nama</th><td>{{ session('pendaftar')->nama }}</td></tr>
+                </table>
+
+                {{-- Tombol hapus data --}}
+                <form action="{{ route('pendaftar.destroy', session('pendaftar')->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Hapus Data</button>
+                </form>
+            @endif
+        </div>
+    </div>
+@endif
+
 
     {{-- Form Cetak KK --}}
     @if(Route::currentRouteName() == 'pendaftar.cetak')

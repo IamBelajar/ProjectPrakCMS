@@ -1,39 +1,54 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\KK;
 use App\Models\Pendaftar;
+use Illuminate\Support\Facades\Log;
 
 class PendaftarController extends Controller
 {
     public function formPendaftaran()
-{
-    return view('pendaftar.show'); // view ini berisi form yang kamu lampirkan di atas
-}
-
+    {
+        return view('pendaftar.show');
+    }
 
     public function submitPendaftaran(Request $request)
-{
-    $request->validate([
-        'nama' => 'required',
-        'nik' => 'required|unique:pendaftar,nik',
-        'alamat' => 'required',
-        'telepon' => 'required',
-    ]);
+    {
+        try {
+            $request->validate([
+                'nama' => 'required',
+                'nik' => 'required|unique:pendaftar,nik|numeric',
+                'alamat' => 'required',
+                'telepon' => 'required|numeric',
+            ]);
 
-    $pendaftar = new Pendaftar();
-    $pendaftar->nama = $request->nama;
-    $pendaftar->nik = $request->nik;
-    $pendaftar->alamat = $request->alamat;
-    $pendaftar->telepon = $request->telepon;
-    $pendaftar->save();
+            $pendaftar = new Pendaftar();
+            $pendaftar->nama = $request->nama;
+            $pendaftar->nik = $request->nik;
+            $pendaftar->alamat = $request->alamat;
+            $pendaftar->telepon = $request->telepon;
+            $pendaftar->save();
 
-    return redirect()->route('pendaftar.form')
-                     ->with('success_pendaftaran', 'Pendaftaran berhasil!')
-                     ->with('pendaftar', $pendaftar);
-}
+            // Tambahkan log info
+            Log::info('Pendaftaran berhasil disimpan', [
+                'id' => $pendaftar->id,
+                'nama' => $pendaftar->nama,
+                'nik' => $pendaftar->nik,
+            ]);
+
+            return redirect()->route('pendaftar.form')
+                             ->with('success_pendaftaran', 'Pendaftaran berhasil!')
+                             ->with('pendaftar', $pendaftar);
+        } catch (\Exception $e) {
+            // Tambahkan log error
+            Log::error('Gagal menyimpan pendaftaran: ' . $e->getMessage());
+
+            return back()->withErrors('Terjadi kesalahan saat menyimpan data.');
+        }
+    }
 
      public function formKk() {
         session(['type' => 'kk']);
