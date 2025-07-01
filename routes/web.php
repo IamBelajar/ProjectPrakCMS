@@ -2,44 +2,41 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PendaftarController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageController;
 
-Route::get('/pendaftar/form', function () {
-    return view('pendaftar.show');
-})->name('pendaftar.form');
-Route::get('/pendaftar/cetak', function () {
-    return view('pendaftar.show');
-})->name('pendaftar.cetak');
-Route::get('/', function () {
-    return view('pendaftar.index');
-})->name('pendaftar.index');
+// Autentikasi
+Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Group routes yang membutuhkan login
+Route::middleware('auth')->group(function () {
 
-Route::get('/pendaftaran', [PendaftarController::class, 'formPendaftaran'])->name('form.pendaftaran');
-Route::post('/pendaftaran/submit', [PendaftarController::class, 'submitPendaftaran'])->name('pendaftaran.submit');
+    Route::get('/index', function () {
+        return view('pendaftar.index');
+    })->name('pendaftar.index');
 
-Route::get('/kk', [PendaftarController::class, 'formKk'])->name('kk.show');
-Route::post('/kk/submit', [PendaftarController::class, 'submitKk'])->name('kk.submit');
+    // FORM PENDAFTARAN
+    Route::get('/pendaftaran', [PendaftarController::class, 'formPendaftaran'])->name('pendaftar.form');
+    Route::post('/pendaftaran', [PendaftarController::class, 'submitPendaftaran'])->name('pendaftaran.submit');
 
-Route::get('/pendaftar/{id}', [PendaftarController::class, 'showPendaftar'])->name('pendaftar.show');
-Route::delete('/pendaftar/{id}', [PendaftarController::class, 'destroy'])->name('pendaftar.destroy');
+    // FORM CETAK KK
+    Route::get('/kk', [PendaftarController::class, 'formKk'])->middleware('auth')->name('pendaftar.cetak');
+    Route::post('/kk/submit', [PendaftarController::class, 'submitKk'])->name('kk.submit');
 
-Route::get('/kk/{id}', [PendaftarController::class, 'showKk'])->name('kk.show');
-Route::delete('/kk/{id}', [PendaftarController::class, 'destroy'])->name('kk.destroy');
+    // CEK PENDAFTAR
+    Route::get('/cek-pendaftar', [PendaftarController::class, 'formCekPendaftar'])->name('form.cek.pendaftar');
+    Route::get('/cek-pendaftar/search', [PendaftarController::class, 'cekPendaftar'])->name('pendaftar.cek');
 
-Route::get('/pendaftaran', [PendaftarController::class, 'formPendaftaran'])->name('pendaftar.form');
-Route::post('/pendaftaran', [PendaftarController::class, 'submitPendaftaran'])->name('pendaftaran.submit');
+    // HAPUS PENDAFTAR DAN KK
+    Route::delete('/pendaftar/{id}', [PendaftarController::class, 'destroy'])->name('pendaftar.destroy');
 
-Route::get('/kk', [PendaftarController::class, 'showForm'])->name('kk.form');
-Route::post('/kk/submit', [PendaftarController::class, 'submitKk'])->name('kk.submit');
+    // UPLOAD GAMBAR
+    Route::get('/upload', [ImageController::class, 'create'])->name('pendaftar.upload');
+    Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
+    Route::delete('/upload/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
 
-Route::get('/pendaftaran-kk', function () {
-    return 'Selamat datang di halaman Pendaftaran KK Online!';
-})->middleware('check.age');
-
-Route::get('/upload', [ImageController::class, 'create'])->name('pendaftar.upload');
-Route::post('/upload', [ImageController::class, 'store'])->name('image.upload');
-Route::delete('/upload/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
-
-Route::get('/cek-pendaftar', [PendaftarController::class, 'formCekPendaftar'])->name('form.cek.pendaftar');
-Route::get('/cek-pendaftar/search', [PendaftarController::class, 'cekPendaftar'])->name('pendaftar.cek');
+});

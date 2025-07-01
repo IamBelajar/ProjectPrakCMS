@@ -51,9 +51,10 @@ class PendaftarController extends Controller
     }
 
      public function formKk() {
-        session(['type' => 'kk']);
-        return view('kk.show');
-    }
+    session(['type' => 'kk']); 
+    return view('pendaftar.show'); 
+}
+
 
     public function formCekPendaftar()
     {
