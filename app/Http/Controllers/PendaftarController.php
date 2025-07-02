@@ -46,7 +46,7 @@ class PendaftarController extends Controller
             // Tambahkan log error
             Log::error('Gagal menyimpan pendaftaran: ' . $e->getMessage());
 
-            return back()->withErrors('Terjadi kesalahan saat menyimpan data.');
+            return back()->withErrors('Terjadi kesalahan saat menyimpan data/');
         }
     }
 
